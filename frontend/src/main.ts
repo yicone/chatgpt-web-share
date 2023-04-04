@@ -21,7 +21,7 @@ const app = createApp(App);
 if (import.meta.env.VITE_DISABLE_SENTRY !== "yes") {
   Sentry.init({
     app,
-    dsn: "https://025ea375ad134baba1f7b11d68d24fa5@o4504870115999745.ingest.sentry.io/4504885986263040",
+    dsn: "https://ac598690cd994673a8bd319b2c575213@o4504954233159680.ingest.sentry.io/4504954240827392",
     integrations: [
       new BrowserTracing({
         routingInstrumentation: Sentry.vueRouterInstrumentation(router),
