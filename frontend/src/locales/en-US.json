@@ -1,7 +1,8 @@
 {
   "commons": {
     "notLogin": "Not logged in",
-    "siteTitle": "ChatGPT",
+    "siteTitle": "ShareGPT",
+    "siteSlogan": "Privacy Matters, Empowering You.",
     "confirm": "Confirm",
     "stayInCurrentPage": "Stay on this page",
     "username": "Username",

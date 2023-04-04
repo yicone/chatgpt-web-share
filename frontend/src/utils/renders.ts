@@ -19,7 +19,7 @@ const t = i18n.global.t as any;
 const modelNameMap = {
   "text-davinci-002-render-sha": t("commons.shaModel"),
   "text-davinci-002-render-paid": t("commons.paidModel"),
-  "gpt-4": t("commons.gpt4Model"),
+  // "gpt-4": t("commons.gpt4Model"),
 };
 
 const getModelNameTrans = (model_name: keyof typeof modelNameMap) => {
