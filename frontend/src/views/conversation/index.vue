@@ -84,27 +84,6 @@
               </template>
               {{ $t("tips.autoScrolling") }}
             </n-tooltip>
-            <n-button secondary type="info" size="small" @click="showFullscreenHistory">
-              <template #icon>
-                <n-icon :size="22">
-                  <FullscreenRound />
-                </n-icon>
-              </template>
-            </n-button>
-            <n-button secondary type="primary" size="small" @click="exportToMarkdownFile">
-              <template #icon>
-                <n-icon>
-                  <LogoMarkdown />
-                </n-icon>
-              </template>
-            </n-button>
-            <n-button secondary type="warning" size="small" @click="exportToPdfFile">
-              <template #icon>
-                <n-icon>
-                  <Print />
-                </n-icon>
-              </template>
-            </n-button>
           </div>
           <!-- 输入框 -->
           <n-input v-model:value="inputValue" class="flex-1" type="textarea" :bordered="false" :placeholder="$t('tips.sendMessage')"
