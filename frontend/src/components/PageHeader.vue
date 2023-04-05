@@ -31,6 +31,11 @@
           <n-button v-if="userStore.user?.is_superuser" circle @click="jumpToAdminOrConv">
             <n-icon :component="isInAdmin ? ChatFilled : ManageAccountsFilled" />
           </n-button>
+          <n-button circle title="客服群" @click="openTelegram">
+            <n-icon>
+              <svg viewBox="0 0 32 32" width="1.2em" height="1.2em" data-v-c2914fc3=""><path fill="currentColor" d="m29.919 6.163l-4.225 19.925c-.319 1.406-1.15 1.756-2.331 1.094l-6.438-4.744l-3.106 2.988c-.344.344-.631.631-1.294.631l.463-6.556L24.919 8.72c.519-.462-.113-.719-.806-.256l-14.75 9.288l-6.35-1.988c-1.381-.431-1.406-1.381.288-2.044l24.837-9.569c1.15-.431 2.156.256 1.781 2.013z"></path></svg>
+            </n-icon>
+          </n-button>
           <n-button circle @click="toggleTheme">
             <n-icon :component="themeIcon" />
           </n-button>
@@ -79,6 +84,10 @@ const themeIcon = computed(() => {
     return LightModeRound
   }
 })
+
+const openTelegram = () => {
+  window.open('https://t.me/share_gpt', '_blank');
+}
 
 const toggleTheme = () => {
   appStore.toggleTheme();

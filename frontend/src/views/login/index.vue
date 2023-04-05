@@ -1,4 +1,12 @@
 <template>
+  <n-card title="公告" hoverable>
+    本站暂不开放注册。试用和注册，请联系客服💁 <n-a href="https://t.me/share_gpt" target="blank">ShareGPT官方合租群</n-a>
+  </n-card>
+  <div style="text-align: center;">
+    <n-h1 style="padding-top: 60px;font-family: Metropolis,sans-serif;font-size: 64px !important;">ShareGPT</n-h1>
+    <p>一个 ChatGPT 合租服务</p>
+    <p>服务稳定，响应快速，注重隐私</p>
+  </div>
   <!-- Login Form -->
   <div class="flex justify-center items-center mt-20">
     <n-form ref="formRef" :model="formValue" :rules="loginRules" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
