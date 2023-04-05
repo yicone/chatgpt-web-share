@@ -84,6 +84,7 @@
               </template>
               {{ $t("tips.autoScrolling") }}
             </n-tooltip>
+            <!--
             <n-button secondary type="info" size="small" @click="showFullscreenHistory">
               <template #icon>
                 <n-icon :size="22">
@@ -105,6 +106,7 @@
                 </n-icon>
               </template>
             </n-button>
+            -->
           </div>
           <!-- 输入框 -->
           <n-input v-model:value="inputValue" class="flex-1" type="textarea" :bordered="false" :placeholder="$t('tips.sendMessage')"
