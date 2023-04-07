@@ -141,7 +141,9 @@
     "userNotAllowToUseGPT4Model": "Not allowed to use GPT-4 model",
     "noUserSelected": "No User Selected",
     "httpError": "HTTP Error",
-    "invalidRequest": "Invalid Request"
+    "invalidRequest": "Invalid Request",
+    "internal": "Internal Error",
+    "invalidParams": "Invalid Params"
   },
   "tips": {
     "loginExpired": "Login expired. Do you want to go to the login page?",
