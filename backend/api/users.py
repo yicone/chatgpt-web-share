@@ -70,6 +70,11 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, Integer]):
                 raise api.exceptions.UsernameExistsException("Username already exists")
             if (await session.execute(select(User).filter(User.email == user_create.email))).scalar_one_or_none():
                 raise api.exceptions.EmailExistsException("Email already exists")
+            
+        user_create.is_verified = False
+        user_create.max_conv_count = config.get('new_user_max_conv_count', 1)
+        user_create.available_ask_count = config.get('new_user_available_ask_count', 3)
+        user_create.available_gpt4_ask_count = config.get('new_user_available_gpt4_ask_count', 0)
         return await super().create(user_create, safe, request)
 
     reset_password_token_secret = SECRET
