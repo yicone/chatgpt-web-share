@@ -45,3 +45,8 @@ class EmailExistsException(SelfDefinedException):
 class UserNotVerifiedException(SelfDefinedException):
     def __init__(self, message: str = ""):
         super().__init__("errors.userNotVerified", message)
+
+
+class InternalException(SelfDefinedException):
+    def __init__(self, message: str = ""):
+        super().__init__("errors.internal", message)
