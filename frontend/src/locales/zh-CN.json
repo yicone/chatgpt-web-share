@@ -130,10 +130,18 @@
     "requestValidationError": "请求参数错误",
     "userAlreadyExists": "用户已存在",
     "badCredentials": "用户名或密码错误",
+    "badUsername": "格式无效：6-20个字符，仅允许字母/数字/下划线/英文句点，且不能有连续的、在开头或结尾的下划线或句点",
+    "badEmail": "Email格式错误",
+    "badPassword": "必须同时包含大小写字母、数字、和特殊字符，长度至少为8位",
+    "usernameExists": "用户名已存在",
+    "emailExists": "Email已存在",
+    "registerFailed": "注册失败",
+    "userNotVerified": "用户未验证，请查看邮箱激活账号",
     "maxConversationCountReached": "会话数量已达上限",
     "cannotConnectMoreThanOneClient": "当前用户已有对话等待回复，不能再次请求",
     "noUserSelected": "未选择用户",
-    "httpError": "HTTP错误"
+    "httpError": "HTTP错误",
+    "invalidRequest": "无效请求"
   },
   "tips": {
     "loginExpired": "登录已过期。是否跳转到登录页面？",
@@ -167,6 +175,7 @@
     "whetherUsePaidModel": "请选择使用的模型，为空则使用默认模型",
     "loadConversation": "请从左侧选择对话以加载，或者",
     "newConversation": "发起新对话",
+    "registerSuccess": "注册成功，请查看邮箱激活账号",
     "loginSuccess": "登录成功",
     "jumpingPage": "正在跳转……",
     "terminated": "连接被服务端终止",

@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Any
 
 from fastapi.security import OAuth2PasswordRequestForm
+import jwt
 from starlette.websockets import WebSocket
 
 import api.exceptions
@@ -22,6 +23,8 @@ from api.models import User
 from sqlalchemy import select, Integer
 from fastapi_users.models import UP
 from utils.logger import get_logger
+
+from utils.email import send_activation_email
 
 logger = get_logger(__name__)
 
@@ -64,9 +67,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, Integer]):
         # 检查用户名、手机、邮箱是否已经存在
         async with get_async_session_context() as session:
             if (await session.execute(select(User).filter(User.username == user_create.username))).scalar_one_or_none():
-                raise api.exceptions.InvalidRequestException("Username already exists")
+                raise api.exceptions.UsernameExistsException("Username already exists")
             if (await session.execute(select(User).filter(User.email == user_create.email))).scalar_one_or_none():
-                raise api.exceptions.InvalidRequestException("Email already exists")
+                raise api.exceptions.EmailExistsException("Email already exists")
         return await super().create(user_create, safe, request)
 
     reset_password_token_secret = SECRET
@@ -88,7 +91,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, Integer]):
 
         :param credentials: The user credentials.
         """
-        user = await get_by_username(credentials.username)
+        user = await self.get_by_email(credentials.username)
 
         if user is None:
             # Run the hasher to mitigate timing attack
@@ -99,8 +102,11 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, Integer]):
         verified, updated_password_hash = self.password_helper.verify_and_update(
             credentials.password, user.hashed_password
         )
+        # check if user is verified
         if not verified:
             return None
+        if not user.is_verified:
+            raise api.exceptions.UserNotVerifiedException("User not verified")
         # Update password hash to a more robust one if needed
         if updated_password_hash is not None:
             await self.user_db.update(user, {"hashed_password": updated_password_hash})
@@ -109,6 +115,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, Integer]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
+        payload = {"email": user.email}
+        token = jwt.encode(payload, self.verification_token_secret)
+        await send_activation_email(user.email, token)
 
     async def on_after_forgot_password(
             self, user: User, token: str, request: Optional[Request] = None
@@ -121,6 +130,16 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, Integer]):
         print(
             f"Verification requested for user {user.id}. Verification token: {token}")
 
+    async def verifyEmail(self, token: str):
+        try:
+            payload = jwt.decode(token, self.verification_token_secret, algorithms="HS256")
+            user = await self.get_by_email(payload['email'])
+            await self.user_db.update(user, {"is_verified": True})
+
+            return True
+
+        except:
+            return False
 
 async def websocket_auth(websocket: WebSocket) -> User | None:
     user = None
@@ -174,3 +193,4 @@ async def current_super_user(user: User = Depends(current_active_user)):
     if not user.is_superuser:
         raise api.exceptions.AuthorityDenyException("You are not super user")
     return user
+

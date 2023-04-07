@@ -27,7 +27,7 @@
               </n-button>
             </n-dropdown>
           </div>
-          <div v-else class="text-gray-500 inline-block">{{ $t("commons.notLogin") }}</div>
+          <div v-else class="text-gray-500 inline-block"><n-button v-if="!isLoginRoute" quaternary type="primary" @click="handleLoginClick">{{ $t("commons.login") }}</n-button></div>
           <n-button v-if="userStore.user?.is_superuser" circle @click="jumpToAdminOrConv">
             <n-icon :component="isInAdmin ? ChatFilled : ManageAccountsFilled" />
           </n-button>
@@ -145,8 +145,9 @@ const getOptions = (): Array<DropdownOption> => {
           negativeText: t("commons.cancel"),
           onPositiveClick: async () => {
             await userStore.logout();
+            console.warn('logout 1')
             Message.success(t('commons.logoutSuccess'));
-            await router.push({ path: '/' });
+            await router.push({ path: '/home' });
           }
         })
       }
@@ -173,6 +174,10 @@ const jumpToAdminOrConv = async () => {
   }
 }
 
+const handleLoginClick = () => {
+  router.push({ name: 'login' })
+}
 
 
+const isLoginRoute = computed(() => route.path === '/login')
 </script>

@@ -69,6 +69,7 @@ axios.interceptors.response.use(
           onPositiveClick() {
             const userStore = useUserStore();
             userStore.logout().then(() => {
+              console.warn('logout in axios interceptor')
               router.push({ name: "login" });
             });
             window.location.reload();

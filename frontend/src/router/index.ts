@@ -18,6 +18,15 @@ const router = createRouter({
       },
     },
     {
+      path: "/register",
+      name: "register",
+      component: () => import("@/views/register.vue"),
+      meta: {
+        requiresAuth: false,
+        roles: ["superuser", "user"],
+      },
+    },
+    {
       path: "/login",
       name: "login",
       component: () => import("@/views/login/index.vue"),

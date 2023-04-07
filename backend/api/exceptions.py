@@ -30,3 +30,18 @@ class ResourceNotFoundException(SelfDefinedException):
 class InvalidRequestException(SelfDefinedException):
     def __init__(self, message: str = ""):
         super().__init__("errors.invalidRequest", message)
+
+
+class UsernameExistsException(SelfDefinedException):
+    def __init__(self, message: str = ""):
+        super().__init__("errors.usernameExists", message)
+
+
+class EmailExistsException(SelfDefinedException):
+    def __init__(self, message: str = ""):
+        super().__init__("errors.emailExists", message)
+
+
+class UserNotVerifiedException(SelfDefinedException):
+    def __init__(self, message: str = ""):
+        super().__init__("errors.userNotVerified", message)

@@ -1,3 +1,4 @@
+import jwt
 from sqlalchemy.future import select
 
 from api.database import get_async_session_context, get_user_db_context
@@ -8,11 +9,25 @@ from api.schema import UserRead, UserUpdate, UserCreate, LimitSchema
 from api.users import auth_backend, fastapi_users, current_active_user, get_user_manager_context, current_super_user
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 router = APIRouter()
+auth_router = fastapi_users.get_auth_router(auth_backend)
+
+
+@auth_router.get("/verify/{token}", tags=["auth"])
+async def verify_user(token: str):
+    async with get_async_session_context() as session:
+        async with get_user_db_context(session) as db:
+            async with get_user_manager_context(db) as user_manager:
+                result = await user_manager.verifyEmail(token)
+                if result:
+                    return RedirectResponse("/login", status_code=303)
+                else:
+                    return HTMLResponse(f"<h2>Error: 验证失败</h2>", status_code=400)
 
 router.include_router(
-    fastapi_users.get_auth_router(auth_backend), prefix="/auth", tags=["auth"]
+    auth_router, prefix="/auth", tags=["auth"]
 )
 
 router.include_router(

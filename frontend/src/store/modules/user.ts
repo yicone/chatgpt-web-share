@@ -1,5 +1,5 @@
-import { getUserInfoApi, loginApi, LoginData, logoutApi } from "@/api/user";
-import { UserRead } from "@/types/schema";
+import { getUserInfoApi, loginApi, LoginData, logoutApi, registerApi } from "@/api/user";
+import { UserCreate, UserRead } from "@/types/schema";
 import { clearCookie } from "@/utils/auth";
 import { defineStore } from "pinia";
 import { UserState } from "../types";
@@ -37,6 +37,10 @@ const useUserStore = defineStore("user", {
       this.setInfo(result);
     },
 
+    async register(userInfo: UserCreate) {
+      await registerApi(userInfo);
+    },
+
     // Login
     async login(loginForm: LoginData) {
       try {
@@ -52,6 +56,7 @@ const useUserStore = defineStore("user", {
     async logout() {
       try {
         await logoutApi();
+        console.warn('userStore.logout')
       } finally {
         this.resetInfo();
         clearCookie();

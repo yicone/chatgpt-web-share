@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    NA: typeof import('naive-ui')['NA']
     NAutoComplete: typeof import('naive-ui')['NAutoComplete']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
@@ -17,6 +18,7 @@ declare module '@vue/runtime-core' {
     NCollapseItem: typeof import('naive-ui')['NCollapseItem']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
     NDataTable: typeof import('naive-ui')['NDataTable']
+    NDescriptions: typeof import('naive-ui')['NDescriptions']
     NDivider: typeof import('naive-ui')['NDivider']
     NDropdown: typeof import('naive-ui')['NDropdown']
     NDynamicTags: typeof import('naive-ui')['NDynamicTags']
@@ -24,6 +26,7 @@ declare module '@vue/runtime-core' {
     NForm: typeof import('naive-ui')['NForm']
     NFormItem: typeof import('naive-ui')['NFormItem']
     NGlobalStyle: typeof import('naive-ui')['NGlobalStyle']
+    NH1: typeof import('naive-ui')['NH1']
     NIcon: typeof import('naive-ui')['NIcon']
     NInput: typeof import('naive-ui')['NInput']
     NInputNumber: typeof import('naive-ui')['NInputNumber']

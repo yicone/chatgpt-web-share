@@ -3,13 +3,13 @@ import axios from "axios";
 import ApiUrl from "./url";
 
 export interface LoginData {
-  username: string;
+  email: string;
   password: string;
 }
 
 export function loginApi(data: LoginData) {
   const formData = new FormData();
-  formData.set("username", data.username);
+  formData.set("username", data.email);
   formData.set("password", data.password);
   return axios.post<any>(ApiUrl.Login, formData, {
     headers: {
