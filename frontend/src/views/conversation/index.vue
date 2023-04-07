@@ -109,8 +109,8 @@
             -->
           </div>
           <!-- 输入框 -->
-          <n-input v-model:value="inputValue" class="flex-1" type="textarea" :bordered="false" :placeholder="$t('tips.sendMessage')"
-            @keydown.shift.enter="shortcutSendMsg" />
+          <n-input v-model:value="inputValue" class="flex-1" type="textarea" :bordered="false" :placeholder="$t('tips.sendMessage', [appStore.sendKey])"
+            @keydown="shortcutSendMsg" />
           <div class="m-2 flex flex-row justify-between">
             <n-text depth="3" class="hidden sm:block">
               {{ currentAvaliableAskCountsTip }}
@@ -152,10 +152,11 @@ import {
 } from '@/utils/renders';
 import { saveAs } from 'file-saver';
 import HistoryContent from "@/views/conversation/components/HistoryContent.vue";
-
+import { useAppStore } from "@/store";
 import { getConvMessageListFromId } from "@/utils/conversation"
 const themeVars = useThemeVars()
 
+const appStore = useAppStore();
 const { t } = useI18n();
 
 const rootRef = ref();
@@ -344,8 +345,17 @@ const makeNewConversation = () => {
 }
 
 const shortcutSendMsg = (e: KeyboardEvent) => {
-  e.preventDefault();
-  sendMsg();
+  const sendKey = appStore.sendKey; // "Shift+Enter" or "Ctrl+Enter" or "Enter"
+  if (sendKey === "Enter" && e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+    e.preventDefault();
+    sendMsg();
+  } else if (sendKey === "Shift+Enter" && e.key === "Enter" && e.shiftKey && !e.ctrlKey) {
+    e.preventDefault();
+    sendMsg();
+  } else if (sendKey === "Ctrl+Enter" && e.key === "Enter" && !e.shiftKey && e.ctrlKey) {
+    e.preventDefault();
+    sendMsg();
+  }
 }
 
 const autoScrolling = ref<boolean>(true);
@@ -372,6 +382,7 @@ const scrollToBottomSmooth = () => {
 
 const sendMsg = async () => {
   if (sendDisabled.value || loadingBar.value) {
+    Message.error(t("tips.pleaseSelectConversation"));
     return;
   }
 
@@ -471,13 +482,13 @@ const sendMsg = async () => {
           // 解析 ISO string 为 小数时间戳
           const create_time = new Date(newConversation.value.create_time!).getTime() / 1000;
           const newConvDetail = {
-                id: currentConversationId.value,
-                title: newConversation.value!.title,
-                model_name: newConversation.value!.model_name,
-                create_time,
-                mapping: {},
-                current_node: null,
-              } as ChatConversationDetail;
+            id: currentConversationId.value,
+            title: newConversation.value!.title,
+            model_name: newConversation.value!.model_name,
+            create_time,
+            mapping: {},
+            current_node: null,
+          } as ChatConversationDetail;
           conversationStore.$patch({
             conversationDetailMap: {
               [newConversation.value.conversation_id!]: newConvDetail,

@@ -65,7 +65,7 @@ import { ref, computed, h } from 'vue';
 import UserProfileCard from './UserProfileCard.vue';
 import { popupResetUserPasswordDialog } from '@/utils/renders';
 import { resetUserPasswordApi } from '@/api/user';
-
+import PreferenceForm from './PreferenceForm.vue';
 
 const { t } = useI18n();
 const userStore = useUserStore();
@@ -165,6 +165,33 @@ const getOptions = (): Array<DropdownOption> => {
       key: 'resetpwd',
       props: {
         onClick: resetPassword
+      }
+    },
+    {
+      label: t("commons.preferences"),
+      key: 'preference',
+      props: {
+        onClick: () => {
+          let preference = {
+            sendKey: appStore.sendKey,
+          }
+          Dialog.info({
+            title: t("commons.preferences"),
+            positiveText: t("commons.confirm"),
+            negativeText: t("commons.cancel"),
+            content: () =>
+              h(PreferenceForm, {
+                onUpdate: (val: any) => {
+                  preference = val;
+                },
+                value: preference
+              }),
+            onPositiveClick() {
+              appStore.$patch(preference);
+              Message.success(t("tips.success"));
+            },
+          });
+        }
       }
     },
     {
