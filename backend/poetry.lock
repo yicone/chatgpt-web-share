@@ -1495,14 +1495,14 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "revchatgpt"
-version = "4.1.1"
+version = "4.1.5"
 description = "ChatGPT is a reverse engineering of OpenAI's ChatGPT API"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "revChatGPT-4.1.1-py3-none-any.whl", hash = "sha256:2a7631e0cc397483527e1bed4ba98b06196199690943aa0fe9e6ef7cb2f9c919"},
-    {file = "revChatGPT-4.1.1.tar.gz", hash = "sha256:db80d9fb6458b23c2cd303b3dd3c44e53253c4e1519b6f24ad465f1607936334"},
+    {file = "revChatGPT-4.1.5-py3-none-any.whl", hash = "sha256:8ce85a4e62b61c2ab685b5982acaeb7491bd1bac65ad243a107ca257551b8ba6"},
+    {file = "revChatGPT-4.1.5.tar.gz", hash = "sha256:5bd4f27ab3e7ee1372c19713665211c567b1a3df9edf7d809bf17e1c2a5e0c4a"},
 ]
 
 [package.dependencies]
@@ -1512,9 +1512,6 @@ OpenAIAuth = "0.3.6"
 prompt-toolkit = "*"
 requests = {version = "*", extras = ["socks"]}
 tiktoken = ">=0.3.0"
-
-[package.extras]
-webgpt = ["duckduckgo-search"]
 
 [[package]]
 name = "rfc3986"
@@ -2011,4 +2008,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "68a4e20ecf36236019099dc025e96698aee609b83125ec4a980ee4ea9dc50b7b"
+content-hash = "cdd2413151a9daa4d5537b69e90b71aef8547364fc84ddbcadff6ecebe455e9a"

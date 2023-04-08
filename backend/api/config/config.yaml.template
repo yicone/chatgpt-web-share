@@ -24,6 +24,7 @@ chatgpt_paid: false
 # run_reverse_proxy: true
 # reverse_proxy_port: 6062
 # reverse_proxy_binary_path: ChatGPT-Proxy-V4
+# auto_refresh_reverse_proxy_puid: false  # 如果需要自动更新 puid，设置为 true
 
 log_dir: ./logs
 console_log_level: INFO

@@ -16,6 +16,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 import api.globals as g
 import os
+from utils import chatgpt_user_helper
 import utils.store_statistics
 from utils.sync_conversations import sync_conversations
 
@@ -135,12 +136,67 @@ async def on_startup():
             if chatgpt_user.is_active:
                 try:
                     logger.info(f"Initializing chatgpt_manager for {chatgpt_user.email}")
-                    chatgpt_manager = api.chatgpt.ChatGPTManager(chatgpt_user.access_token, chatgpt_user.is_plus)
+                    password = None
+                    if chatgpt_user.hashed_password:
+                        password = chatgpt_user_helper.decrypt(chatgpt_user.hashed_password)
+                    elif not chatgpt_user.access_token:
+                        logger.warn(f"chatgpt_user {chatgpt_user.email} has no password or access_token")
+                        continue
+
+                    chatgpt_manager = api.chatgpt.ChatGPTManager({
+                        "email": chatgpt_user.email,
+                        "password": password,
+                        "access_token": chatgpt_user.access_token,
+                        "session_token": chatgpt_user.session_token,
+                        "paid": chatgpt_user.is_plus
+                    })
                     g.chatgpt_managers[chatgpt_user.id] = chatgpt_manager
                     logger.info(f"chatgpt_manager for {chatgpt_user.email} initialized")
                 except Exception as e:
                     logger.error(f"Error when initializing chatgpt_manager for {chatgpt_user.email}: {e}")
     logger.info("All chatgpt_managers initialized")
+
+    # 定时刷新 access_token 和 puid
+    # 每 6 天刷新一次
+    @aiocron.crontab('0 0 */6 * *', loop=asyncio.get_event_loop())
+    async def refresh_access_token():
+        logger.info("Refreshing access_token and puid...")
+        for chatgpt_user in chatgpt_users:
+            try:
+                # refresh access token
+                chatgpt_manager = g.chatgpt_managers[chatgpt_user.id]
+                chatgpt_manager.chatbot.login()
+                logger.info(f"{chatgpt_user.email} login success.")
+
+                access_token = chatgpt_manager.chatbot.config["access_token"]
+                is_access_token_updated = access_token != chatgpt_user.access_token
+                logger.info(f"Is access_token updated? {is_access_token_updated}")
+                session_token = chatgpt_manager.chatbot.config["session_token"]
+                is_session_token_updated = session_token != chatgpt_user.session_token
+                logger.info(f"Is session_token updated? {is_session_token_updated}")
+                if chatgpt_user.is_plus:
+                    from utils.proxy import refresh_puid
+                    puid = refresh_puid(chatgpt_user.email, access_token, chatgpt_user.puid)
+                    is_puid_updated = puid != chatgpt_user.puid
+                    logger.info(f"{chatgpt_user.email} puid refreshed. Is puid updated? {is_puid_updated}")
+                    if is_puid_updated:
+                        chatgpt_user.puid = puid
+                        chatgpt_user.puid_refresh_time = datetime.now()
+                if is_access_token_updated:
+                    chatgpt_user.access_token = access_token
+                    chatgpt_user.access_token_refresh_time = datetime.now()
+                if is_session_token_updated:
+                    chatgpt_user.session_token = session_token
+                    chatgpt_user.session_token_refresh_time = datetime.now()
+
+                if is_access_token_updated or is_session_token_updated or is_puid_updated:
+                    async with get_async_session_context() as session:
+                        session.add(chatgpt_user)
+                        await session.commit()
+            except Exception as e:
+                logger.error(f"Error when refreshing access_token for {chatgpt_user.email}: {e}")
+            time.sleep(5)
+        logger.info("All access_token refreshed")
 
     # 运行 Proxy Server
     if config.get("run_reverse_proxy", False):

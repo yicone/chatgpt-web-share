@@ -12,11 +12,8 @@ from utils.common import get_conversation_model
 
 
 class ChatGPTManager:
-    def __init__(self, access_token: str, paid: bool):
-        self.chatbot = AsyncChatbot({
-            "access_token": access_token,
-            "paid": paid,
-        })
+    def __init__(self, config: dict[str, str]):
+        self.chatbot = AsyncChatbot(config)
         self.semaphore = asyncio.Semaphore(1)
 
     def is_busy(self):
