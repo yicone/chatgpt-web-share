@@ -20,7 +20,7 @@ import utils.store_statistics
 from utils.sync_conversations import sync_conversations
 
 from api.enums import ChatStatus
-from api.models import Conversation, User
+from api.models import ChatGPTUser, Conversation, User
 from api.response import CustomJSONResponse, PrettyJSONResponse, handle_exception_response
 from api.database import create_db_and_tables, get_async_session_context
 from api.exceptions import SelfDefinedException
@@ -126,10 +126,26 @@ async def on_startup():
             session.add(user)
         await session.commit()
 
+    chatgpt_users: list[ChatGPTUser] = []
+    # 初始化 chatgpt_managers
+    async with get_async_session_context() as session:
+        r = await session.execute(select(ChatGPTUser).where(ChatGPTUser.is_active))
+        chatgpt_users = r.scalars().all()
+        for chatgpt_user in chatgpt_users:
+            if chatgpt_user.is_active:
+                try:
+                    logger.info(f"Initializing chatgpt_manager for {chatgpt_user.email}")
+                    chatgpt_manager = api.chatgpt.ChatGPTManager(chatgpt_user.access_token, chatgpt_user.is_plus)
+                    g.chatgpt_managers[chatgpt_user.id] = chatgpt_manager
+                    logger.info(f"chatgpt_manager for {chatgpt_user.email} initialized")
+                except Exception as e:
+                    logger.error(f"Error when initializing chatgpt_manager for {chatgpt_user.email}: {e}")
+    logger.info("All chatgpt_managers initialized")
+
     # 运行 Proxy Server
     if config.get("run_reverse_proxy", False):
         from utils.proxy import run_reverse_proxy
-        run_reverse_proxy()
+        run_reverse_proxy(chatgpt_users)
         await asyncio.sleep(2)  # 等待 Proxy Server 启动
 
     logger.info(f"Using {os.environ.get('CHATGPT_BASE_URL', '<default_bypass>')} as ChatGPT base url")

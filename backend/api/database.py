@@ -32,6 +32,11 @@ def run_upgrade(conn, cfg):
     command.upgrade(cfg, "head")
 
 
+def run_downgrade(conn, cfg):
+    cfg.attributes["connection"] = conn
+    command.downgrade(cfg, "head")
+
+
 def run_stamp(conn, cfg, revision):
     cfg.attributes["connection"] = conn
     command.stamp(cfg, revision)
@@ -70,6 +75,8 @@ async def create_db_and_tables():
             except Exception as e:
                 logger.warning("Database migration might fail, please check the database manually!")
                 logger.warning(f"detail: {str(e)}")
+                logger.info("try to downgrade database...")
+                await conn.run_sync(run_downgrade, alembic_cfg)
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:

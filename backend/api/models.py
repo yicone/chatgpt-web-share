@@ -42,6 +42,28 @@ class User(Base):
     conversations: Mapped[List["Conversation"]] = relationship("Conversation", back_populates="user")
 
 
+class ChatGPTUser(Base):
+    """
+    ChatGPT 用户表
+
+    """
+
+    __tablename__ = "chatgpt_user"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(64), unique=True, index=True, comment="邮箱")
+    hashed_password: Mapped[str] = mapped_column(String(1024), comment="密码")
+    is_plus: Mapped[bool] = mapped_column(Boolean, default=False, comment="是否Plus用户")
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, comment="是否激活")
+    create_time: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=None, comment="创建时间")
+    access_token: Mapped[Optional[str]] = mapped_column(String(64), default=None, comment="访问令牌")
+    access_token_refresh_time: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=None, comment="访问令牌刷新时间")
+    session_token: Mapped[Optional[str]] = mapped_column(String(64), default=None, comment="会话令牌")
+    session_token_refresh_time: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=None, comment="会话令牌刷新时间")
+    puid: Mapped[Optional[str]] = mapped_column(String(64), default=None, comment="Plus用户cf标识")
+    puid_refresh_time: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=None, comment="puid刷新时间")
+
+
 class Conversation(Base):
     """
     ChatGPT 非官方 API 所使用的对话
@@ -54,6 +76,7 @@ class Conversation(Base):
     conversation_id: Mapped[str] = mapped_column(String(36), index=True, unique=True)
     title: Mapped[Optional[str]] = mapped_column(comment="对话标题")
     user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("user.id"), comment="发起用户id")
+    chatgpt_user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("chatgpt_user.id"), comment="ChatGPT用户id")
     user: Mapped["User"] = relationship(back_populates="conversations")
     is_valid: Mapped[bool] = mapped_column(Boolean, default=True, comment="是否有效")
     model_name: Mapped[Optional[Enum["ChatModels"]]] = mapped_column(

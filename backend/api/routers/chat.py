@@ -11,8 +11,6 @@ from httpx import HTTPError
 from sqlalchemy import select, or_, and_, delete, func
 from starlette.requests import Request
 
-import api.chatgpt
-import api.globals as g
 import api.globals as g
 
 config = g.config
@@ -66,7 +64,7 @@ async def get_all_conversations(user: User = Depends(current_active_user), fetch
 
 @router.get("/conv/{conversation_id}", tags=["conversation"])
 async def get_conversation_history(conversation: Conversation = Depends(get_conversation_by_id)):
-    result = await api.chatgpt.chatgpt_manager.get_conversation_messages(conversation.conversation_id)
+    result = await g.chatgpt_managers[conversation.chatgpt_user_id].get_conversation_messages(conversation.conversation_id)
     # 当不知道模型名时，顺便从对话中获取
     if conversation.model_name is None:
         model_name = result.get("model_name")
@@ -85,7 +83,7 @@ async def delete_conversation(conversation: Conversation = Depends(get_conversat
     if not conversation.is_valid:
         raise InvalidParamsException("errors.conversationAlreadyDeleted")
     try:
-        await api.chatgpt.chatgpt_manager.delete_conversation(conversation.conversation_id)
+        await g.chatgpt_managers[conversation.chatgpt_user_id].delete_conversation(conversation.conversation_id)
     except revChatGPTError as e:
         logger.warning(f"delete conversation {conversation.conversation_id} failed: {e.code} {e.message}")
     except httpx.HTTPStatusError as e:
@@ -109,7 +107,7 @@ async def vanish_conversation(conversation: Conversation = Depends(get_conversat
     #         raise e
     if conversation.is_valid:
         try:
-            await api.chatgpt.chatgpt_manager.delete_conversation(conversation.conversation_id)
+            await g.chatgpt_managers[conversation.chatgpt_user_id].delete_conversation(conversation.conversation_id)
         except revChatGPTError as e:
             logger.warning(f"delete conversation {conversation.conversation_id} failed: {e.code} {e.message}")
         except httpx.HTTPStatusError as e:
@@ -123,7 +121,7 @@ async def vanish_conversation(conversation: Conversation = Depends(get_conversat
 
 @router.patch("/conv/{conversation_id}", tags=["conversation"], response_model=ConversationSchema)
 async def change_conversation_title(title: str, conversation: Conversation = Depends(get_conversation_by_id)):
-    await api.chatgpt.chatgpt_manager.set_conversation_title(conversation.conversation_id,
+    await g.chatgpt_managers[conversation.chatgpt_user_id].set_conversation_title(conversation.conversation_id,
                                                              title)
     async with get_async_session_context() as session:
         conversation.title = title
@@ -164,11 +162,12 @@ async def change_user_chat_status(user_id: int, status: ChatStatus):
 
 @router.delete("/conv", tags=["conversation"])
 async def delete_all_conversation(_user: User = Depends(current_super_user)):
-    await api.chatgpt.chatgpt_manager.clear_conversations()
-    async with get_async_session_context() as session:
-        await session.execute(delete(Conversation))
-        await session.commit()
-    return response(200)
+    for chatgpt_manager in g.chatgpt_managers:
+        await chatgpt_manager.clear_conversations()
+        async with get_async_session_context() as session:
+            await session.execute(delete(Conversation))
+            await session.commit()
+        return response(200)
 
 
 @router.patch("/conv/{conversation_id}/gen_title", tags=["conversation"], response_model=ConversationSchema)
@@ -176,7 +175,7 @@ async def generate_conversation_title(message_id: str, conversation: Conversatio
     if conversation.title is not None:
         raise InvalidParamsException("errors.conversationTitleAlreadyGenerated")
     async with get_async_session_context() as session:
-        result = await api.chatgpt.chatgpt_manager.generate_conversation_title(conversation.id, message_id)
+        result = await g.chatgpt_managers[conversation.chatgpt_user_id].generate_conversation_title(conversation.id, message_id)
         if result["title"]:
             conversation.title = result["title"]
             session.add(conversation)
@@ -264,7 +263,7 @@ async def ask(websocket: WebSocket):
             await websocket.close(1008, "errors.noAvailableGPT4AskCount")
             return
 
-    if api.chatgpt.chatgpt_manager.is_busy():
+    if g.chatgpt_managers[conversation.chatgpt_user_id].is_busy():
         await websocket.send_json({
             "type": "queueing",
             "tip": "tips.queueing"
@@ -284,7 +283,7 @@ async def ask(websocket: WebSocket):
         await change_user_chat_status(user.id, ChatStatus.queueing)
         # is_queueing = True
         queueing_start_time = time.time()
-        async with api.chatgpt.chatgpt_manager.semaphore:
+        async with g.chatgpt_managers[conversation.chatgpt_user_id].semaphore:
             is_queueing = False
             await change_user_chat_status(user.id, ChatStatus.asking)
             await websocket.send_json({
@@ -293,7 +292,7 @@ async def ask(websocket: WebSocket):
             })
             ask_start_time = time.time()
             try:
-                async for data in api.chatgpt.chatgpt_manager.ask(message, conversation_id, parent_id, timeout,
+                async for data in g.chatgpt_managers[conversation.chatgpt_user_id].ask(message, conversation_id, parent_id, timeout,
                                                                   model_name):
                     has_got_reply = True
                     reply = {
@@ -391,7 +390,7 @@ async def ask(websocket: WebSocket):
                 # 设置默认标题
                 try:
                     if new_title is not None:
-                        await api.chatgpt.chatgpt_manager.set_conversation_title(conversation_id, new_title)
+                        await g.chatgpt_managers[conversation.chatgpt_user_id].set_conversation_title(conversation_id, new_title)
                 except Exception as e:
                     logger.warning(e)
                 finally:
@@ -425,7 +424,7 @@ async def ask(websocket: WebSocket):
             await session.commit()
 
     await change_user_chat_status(user.id, ChatStatus.idling)
-    api.chatgpt.chatgpt_manager.reset_chat()
+    g.chatgpt_managers[conversation.chatgpt_user_id].reset_chat()
     await websocket.close(websocket_code, websocket_reason)
 
     # 写入到 scope 中，供统计

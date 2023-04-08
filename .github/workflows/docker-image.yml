@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Clone ChatGPT-Proxy-V4
-        run: git clone https://github.com/moeakwak/ChatGPT-Proxy-V4.git
+        run: git clone https://github.com/yicone/ChatGPT-Proxy-V4.git
 
       # - name: Setup Go
       #   uses: actions/setup-go@v4

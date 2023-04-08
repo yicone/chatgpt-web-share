@@ -21,3 +21,9 @@ request_log_counter = RequestCounter(
     interval=request_log_counter_interval
 )
 ask_log_queue = TimeQueue(config.get("ask_log_time_window", 7 * 24 * 60 * 60))  # 7 days
+
+
+# chatgpt_managers dict init
+# key: chatgpt_user_id
+# value: chatgpt_manager
+chatgpt_managers: dict = {}

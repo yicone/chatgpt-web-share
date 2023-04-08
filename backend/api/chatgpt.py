@@ -12,10 +12,10 @@ from utils.common import get_conversation_model
 
 
 class ChatGPTManager:
-    def __init__(self):
+    def __init__(self, access_token: str, paid: bool):
         self.chatbot = AsyncChatbot({
-            "access_token": g.config.get("chatgpt_access_token"),
-            "paid": g.config.get("chatgpt_paid"),
+            "access_token": access_token,
+            "paid": paid,
         })
         self.semaphore = asyncio.Semaphore(1)
 
@@ -71,6 +71,3 @@ class ChatGPTManager:
         self.chatbot.reset_chat()
         if self.chatbot.config.get("model"):
             self.chatbot.config["model"] = None
-
-
-chatgpt_manager = ChatGPTManager()

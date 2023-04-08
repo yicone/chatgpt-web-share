@@ -17,7 +17,6 @@ initial_admin_password: adminadmin
 initial_user_username: user
 initial_user_password: useruser
 
-chatgpt_access_token: "chatgpt_access_token"
 chatgpt_paid: false
 
 # proxy configuration
@@ -25,7 +24,6 @@ chatgpt_paid: false
 # run_reverse_proxy: true
 # reverse_proxy_port: 6062
 # reverse_proxy_binary_path: ChatGPT-Proxy-V4
-# reverse_proxy_puid: "_puid value from cookie"
 
 log_dir: ./logs
 console_log_level: INFO

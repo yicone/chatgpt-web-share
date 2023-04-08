@@ -1,6 +1,9 @@
 import os.path
 import subprocess
+
+import requests
 import api.globals as g
+from api.models import ChatGPTUser
 config = g.config
 import api.globals as g
 
@@ -9,7 +12,7 @@ from utils.logger import get_logger
 logger = get_logger(__name__)
 
 
-def run_reverse_proxy():
+def run_reverse_proxy(chatgpt_users: list[ChatGPTUser]):
     if not config.get("chatgpt_paid", False):
         logger.error("You need a ChatGPT Plus account to use the reverse proxy!")
         logger.error("Please set chatgpt_paid to true in config.yaml and restart the server.")
@@ -20,12 +23,19 @@ def run_reverse_proxy():
         logger.error("You need to set the reverse proxy binary path in config.yaml!")
         exit(1)
 
-    puid = config.get("reverse_proxy_puid")
+    # extract puids and access_tokens from chatgpt_users
+    puids = []
+    access_tokens = []
+    for chatgpt_user in chatgpt_users:
+        if chatgpt_user.is_active and chatgpt_user.is_plus:
+            puids.append(chatgpt_user.puid)
+            access_tokens.append(chatgpt_user.access_token)
+
     env_vars = {"PORT": str(config.get("reverse_proxy_port", 6060))}
-    if puid:
-        env_vars["PUID"] = puid
+    if puids:
+        env_vars["PUIDS"] = ','.join(puids)
     if config.get("auto_refresh_reverse_proxy_puid"):
-        env_vars["ACCESS_TOKEN"] = config.get("chatgpt_access_token")
+        env_vars["ACCESS_TOKENS"] = ','.join(access_tokens)
 
     g.reverse_proxy_log_file = open(os.path.join(config.get("log_dir", "logs"), "reverse_proxy.log"), "w",
                                     encoding="utf-8")
