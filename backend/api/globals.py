@@ -1,4 +1,5 @@
 from api.config import Config, config_file
+from api.models import ChatGPTUser
 from utils.data_types import RequestCounter, TimeQueue
 
 # log settings
@@ -27,3 +28,4 @@ ask_log_queue = TimeQueue(config.get("ask_log_time_window", 7 * 24 * 60 * 60))  
 # key: chatgpt_user_id
 # value: chatgpt_manager
 chatgpt_managers: dict = {}
+chatgpt_users: list[ChatGPTUser] = []

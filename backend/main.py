@@ -154,6 +154,7 @@ async def on_startup():
                     logger.info(f"chatgpt_manager for {chatgpt_user.email} initialized")
                 except Exception as e:
                     logger.error(f"Error when initializing chatgpt_manager for {chatgpt_user.email}: {e}")
+    g.chatgpt_users = chatgpt_users
     logger.info("All chatgpt_managers initialized")
 
     # 定时刷新 access_token 和 puid

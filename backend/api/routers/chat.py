@@ -1,3 +1,4 @@
+import random
 import time
 from datetime import datetime
 from typing import List
@@ -10,6 +11,7 @@ from fastapi.encoders import jsonable_encoder
 from httpx import HTTPError
 from sqlalchemy import select, or_, and_, delete, func
 from starlette.requests import Request
+from api.chatgpt import ChatGPTManager
 
 import api.globals as g
 
@@ -17,7 +19,7 @@ config = g.config
 from api.database import get_async_session_context
 from api.enums import ChatStatus, ChatModels
 from api.exceptions import InvalidParamsException, AuthorityDenyException
-from api.models import User, Conversation
+from api.models import ChatGPTUser, User, Conversation
 from api.schema import ConversationSchema
 from api.users import current_active_user, websocket_auth, current_super_user
 from revChatGPT.typings import Error as revChatGPTError
@@ -263,7 +265,9 @@ async def ask(websocket: WebSocket):
             await websocket.close(1008, "errors.noAvailableGPT4AskCount")
             return
 
-    if g.chatgpt_managers[conversation.chatgpt_user_id].is_busy():
+    chatgpt_user_id = choose_chatgpt_user_id(conversation, model_name)
+    chatgpt_manager = g.chatgpt_managers[chatgpt_user_id]
+    if chatgpt_manager.is_busy():
         await websocket.send_json({
             "type": "queueing",
             "tip": "tips.queueing"
@@ -283,7 +287,7 @@ async def ask(websocket: WebSocket):
         await change_user_chat_status(user.id, ChatStatus.queueing)
         # is_queueing = True
         queueing_start_time = time.time()
-        async with g.chatgpt_managers[conversation.chatgpt_user_id].semaphore:
+        async with chatgpt_manager.semaphore:
             is_queueing = False
             await change_user_chat_status(user.id, ChatStatus.asking)
             await websocket.send_json({
@@ -292,7 +296,7 @@ async def ask(websocket: WebSocket):
             })
             ask_start_time = time.time()
             try:
-                async for data in g.chatgpt_managers[conversation.chatgpt_user_id].ask(message, conversation_id, parent_id, timeout,
+                async for data in chatgpt_manager.ask(message, conversation_id, parent_id, timeout,
                                                                   model_name):
                     has_got_reply = True
                     reply = {
@@ -390,13 +394,14 @@ async def ask(websocket: WebSocket):
                 # 设置默认标题
                 try:
                     if new_title is not None:
-                        await g.chatgpt_managers[conversation.chatgpt_user_id].set_conversation_title(conversation_id, new_title)
+                        await chatgpt_manager.set_conversation_title(conversation_id, new_title)
                 except Exception as e:
                     logger.warning(e)
                 finally:
                     current_time = datetime.utcnow()
                     conversation = Conversation(conversation_id=conversation_id, title=new_title,
                                                 user_id=user.id,
+                                                chatgpt_user_id=chatgpt_user_id,
                                                 model_name=model_name, create_time=current_time,
                                                 active_time=current_time)
                     session.add(conversation)
@@ -424,10 +429,25 @@ async def ask(websocket: WebSocket):
             await session.commit()
 
     await change_user_chat_status(user.id, ChatStatus.idling)
-    g.chatgpt_managers[conversation.chatgpt_user_id].reset_chat()
+    chatgpt_manager.reset_chat()
     await websocket.close(websocket_code, websocket_reason)
 
     # 写入到 scope 中，供统计
     if has_got_reply:
         g.ask_log_queue.enqueue(
             (user.id, model_name.value, ask_time, queueing_time))
+
+
+def choose_chatgpt_user_id(conversation: Conversation, model_name: ChatModels) -> int:
+    chatgpt_users = g.chatgpt_users
+    if conversation is not None:
+        chatgpt_users = [user for user in chatgpt_users if user.id == conversation.chatgpt_user_id]
+    elif model_name in [ChatModels.gpt4, ChatModels.paid]:
+        chatgpt_users = [user for user in chatgpt_users if user.is_plus]
+
+    available_users = [user.id for user in chatgpt_users if not g.chatgpt_managers[user.id].is_busy()]
+    if len(available_users) > 0:
+        return random.choice(available_users)
+
+    logger.warning("no available chatgpt user")
+    return random.choice([user.id for user in chatgpt_users])
