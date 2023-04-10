@@ -21,7 +21,7 @@
           </n-button>
         </n-form-item>
       </n-form>
-      <p class="text-sm c-zinc-400">遇到问题，请联系客服💁 <n-a href="https://t.me/share_gpt" target="blank">ShareGPT官方合租群</n-a></p>
+      <p class="text-sm c-zinc-400">遇到问题，请联系客服💁 <n-a href="https://t.me/share_gpt" target="blank">ShareGPT官方客服群</n-a></p>
     </div>
     <div class="">
       <p>©2023 ShareGPT</p>

@@ -14,7 +14,7 @@
     </div>
     <div class="">
         
-        <p>©2023 ShareGPT</p>
+        <p>© 2023 ShareGPT</p>
       </div>
   </div>
 </template>
