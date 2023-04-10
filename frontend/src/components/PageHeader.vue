@@ -8,9 +8,10 @@
         <div class="hidden sm:block">
           
         </div>
-        <n-tag :bordered="false" type="success" size="small" class="hidden sm:inline-flex">
+        <!-- <n-tag :bordered="false" type="success" size="small" class="hidden sm:inline-flex">
           {{ $t("commons.siteSlogan") }}
-        </n-tag>
+        </n-tag> -->
+          <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" />
       </n-space>
     </template>
     <template #avatar>
@@ -58,7 +59,8 @@ import { useI18n } from 'vue-i18n';
 import { Dialog, Message } from '@/utils/tips';
 import router from '@/router';
 import { useRoute } from 'vue-router';
-import { DropdownOption } from "naive-ui"
+import { DropdownOption, NIcon } from "naive-ui"
+import type { MenuOption } from 'naive-ui'
 import { ref, computed, h } from 'vue';
 import UserProfileCard from './UserProfileCard.vue';
 import { popupResetUserPasswordDialog } from '@/utils/renders';
@@ -72,6 +74,37 @@ const route = useRoute();
 const version = 'v' + import.meta.env.PACKAGE_VERSION;
 
 console.log(route);
+
+const menuOptions: MenuOption[] = [
+  {
+    label: () =>
+      h(
+        'a',
+        {
+          href: 'https://sharegpt.super.site/pricing',
+          target: '_blank',
+          rel: 'noopenner noreferrer'
+        },
+        '价格'
+      ),
+    key: 'pricing',
+  },
+  {
+    label: () =>
+      h(
+        'a',
+        {
+          href: 'https://sharegpt.super.site/faq',
+          target: '_blank',
+          rel: 'noopenner noreferrer'
+        },
+        'FAQ'
+      ),
+    key: 'faq',
+  },
+]
+
+const activeKey = ref<string | null>(null)
 
 const isInAdmin = computed(() => {
   return route.path.startsWith('/admin');

@@ -6,8 +6,8 @@
     <div v-else class="justify-center flex-1">
       <div>
         <n-h1 style="padding-top: 60px;font-family: Metropolis,sans-serif;font-size: 64px !important;">智享无界</n-h1>
-        <p>网络不通畅？注册被拒？绑卡被拒？😫</p>
-        <p>ShareGPT 为你提供稳定，隐私安全，高性价比的 ChatGPT 合租服务 🎉</p>
+        <p>网络不通畅？注册被拒？绑卡被拒？频繁的证明你是人类？😫</p>
+        <p>Share GPT 为你提供快速，稳定，隐私安全，高性价比的 ChatGPT AI问答服务 🎉</p>
       </div>
       <n-button type="primary" class="mt-6 mb-6" @click="handleStartClick">开始使用</n-button>
       <p class="text-sm c-zinc-400">遇到问题，请联系客服💁 <n-a href="https://t.me/share_gpt" target="blank">ShareGPT官方合租群</n-a></p>
