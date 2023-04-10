@@ -14,9 +14,11 @@ logger = get_logger(__name__)
 
 
 async def sync_conversations():
+    logger.info("Syncing conversations...")
     for chatgpt_user_id, chatgpt_manager in g.chatgpt_managers.items():
         try:
-            logger.info("Syncing conversations...")
+            chatgpt_user_email = chatgpt_manager.chatbot.config["email"]
+            logger.info(f"Syncing conversations for {chatgpt_user_email}...")
             result = await chatgpt_manager.get_conversations()
             logger.info(f"Fetched {len(result)} conversations from ChatGPT account.")
             openai_conversations_map = {conv['id']: conv for conv in result}

@@ -40,7 +40,7 @@ def run_reverse_proxy(chatgpt_users: list[ChatGPTUser]):
     }
     if puids:
         env_vars["PUIDS"] = ",".join(puids)
-    if config.get("auto_refresh_reverse_proxy_puid"):
+    if access_tokens:
         env_vars["ACCESS_TOKENS"] = ",".join(access_tokens)
 
     g.reverse_proxy_log_file = open(
