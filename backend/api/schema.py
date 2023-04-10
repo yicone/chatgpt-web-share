@@ -48,7 +48,7 @@ class UserCreate(schemas.BaseUserCreate):
     is_verified: bool = False
     can_use_paid: bool = False
     max_conv_count: int = 1
-    available_ask_count: int = 3
+    available_ask_count: int = 10
     available_gpt4_ask_count: int = 0
     class Config:
         orm_mode = True

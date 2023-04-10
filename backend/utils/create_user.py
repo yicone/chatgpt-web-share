@@ -20,7 +20,7 @@ async def create_user(username, nickname: str, email: str, password: str, is_sup
                             email=email, password=password, 
                             is_superuser=is_superuser,
                             max_conv_count=config.get('new_user_max_conv_count', 1), 
-                            available_ask_count=config.get('new_user_available_ask_count', 3),
+                            available_ask_count=config.get('new_user_available_ask_count', 10),
                             available_gpt4_ask_count=config.get('new_user_available_gpt4_ask_count', 0),
                             **kwargs
                         )
