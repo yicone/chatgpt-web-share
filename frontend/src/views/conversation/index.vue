@@ -176,9 +176,11 @@ const loadingHistory = ref<boolean>(false);
 
 const currentAvaliableAskCountsTip = computed(() => {
   let result = '';
-  if (userStore.user?.available_ask_count != -1)
+  if (userStore.user?.plan_level == 'basic' && userStore.user?.available_ask_count != -1)
     result += `${t('commons.availableAskCount')}: ${getCountTrans(userStore.user?.available_ask_count!)}   `;
-  if (currentConversation.value && currentConversation.value.model_name === 'gpt-4' && userStore.user?.available_gpt4_ask_count != -1) result += `${t('commons.availableGPT4AskCount')}: ${getCountTrans(userStore.user?.available_gpt4_ask_count!)}`;
+  // if (currentConversation.value && currentConversation.value.model_name === 'gpt-4' && userStore.user?.available_gpt4_ask_count != -1) {
+  //   result += `${t('commons.availableGPT4AskCount')} : ${getCountTrans(userStore.user?.available_gpt4_ask_count!)}`;
+  // }
   return result;
 });
 
