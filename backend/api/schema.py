@@ -5,7 +5,7 @@ from typing import List
 from fastapi_users import schemas
 from pydantic import Field, BaseModel, validator
 
-from api.enums import ChatStatus, ChatModels
+from api.enums import ChatStatus, ChatModels, PlanLevel
 
 
 class UserRead(schemas.BaseUser[int]):
@@ -16,6 +16,7 @@ class UserRead(schemas.BaseUser[int]):
     active_time: datetime.datetime | None
 
     chat_status: ChatStatus
+    plan_level: PlanLevel
 
     can_use_paid: bool
     can_use_gpt4: bool

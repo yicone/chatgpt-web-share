@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped, mapped_column
 
-from api.enums import ChatStatus, ChatModels
+from api.enums import ChatStatus, ChatModels, PlanLevel
 
 
 # declarative base class
@@ -26,6 +26,7 @@ class User(Base):
     nickname: Mapped[str] = mapped_column(String(64), comment="昵称")
     email: Mapped[str]
     active_time: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=None, comment="最后活跃时间")
+    plan_level: Mapped[PlanLevel] = mapped_column(Enum(PlanLevel), default=PlanLevel.basic, comment="套餐等级")
 
     chat_status: Mapped[ChatStatus] = mapped_column(Enum(ChatStatus), default=ChatStatus.idling, comment="对话状态")
     can_use_paid: Mapped[bool] = mapped_column(Boolean, default=False, comment="是否可以使用paid模型")

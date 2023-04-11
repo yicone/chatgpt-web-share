@@ -1,6 +1,13 @@
 import enum
 
 
+class PlanLevel(enum.Enum):
+    basic = "basic"
+    standard = "standard"
+    plus = "plus"
+    premium = "premium"
+
+
 class ChatStatus(enum.Enum):
     asking = "asking"
     queueing = "queueing"
