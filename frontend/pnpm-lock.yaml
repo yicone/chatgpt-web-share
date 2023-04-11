@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@janniks/vue3-katex':
+    specifier: ^0.6.0-rc.5.1
+    version: 0.6.0-rc.5.1(katex@0.16.4)(vue@3.2.47)
   '@sentry/tracing':
     specifier: ^7.44.2
     version: 7.44.2
@@ -49,6 +52,9 @@ dependencies:
   vue-i18n:
     specifier: ^9.2.2
     version: 9.2.2(vue@3.2.47)
+  vue-notion:
+    specifier: 3.0.0-beta.1
+    version: 3.0.0-beta.1(@janniks/vue3-katex@0.6.0-rc.5.1)(vue@3.2.47)
   vue-router:
     specifier: '4'
     version: 4.1.6(vue@3.2.47)
@@ -598,6 +604,17 @@ packages:
     dependencies:
       '@intlify/core-base': 9.2.2
       '@intlify/shared': 9.2.2
+    dev: false
+
+  /@janniks/vue3-katex@0.6.0-rc.5.1(katex@0.16.4)(vue@3.2.47):
+    resolution: {integrity: sha512-3VEvVQ5a/1DK2bo4JJJA2uk6Q+oygpVPwnx/wnVgA8AYH49vZzFI/1YNZQUCEssfXjB7Hk3epAoT4oIYGjGfNw==}
+    peerDependencies:
+      katex: 0.x
+      vue: 3.x
+    dependencies:
+      deepmerge: 4.3.1
+      katex: 0.16.4
+      vue: 3.2.47
     dev: false
 
   /@jridgewell/gen-mapping@0.1.1:
@@ -1435,9 +1452,13 @@ packages:
       ms: 2.1.2
     dev: true
 
+  /deepmerge@4.3.1:
+    resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
   /defu@6.1.2:
     resolution: {integrity: sha512-+uO4+qr7msjNNWKYPHqN/3+Dx3NFkmIzayk2L1MyZQlvgZb/J1A0fo410dpKrN2SnqFjt8n4JL8fDJE0wIgjFQ==}
-    dev: true
 
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
@@ -2660,6 +2681,17 @@ packages:
       '@intlify/shared': 9.2.2
       '@intlify/vue-devtools': 9.2.2
       '@vue/devtools-api': 6.5.0
+      vue: 3.2.47
+    dev: false
+
+  /vue-notion@3.0.0-beta.1(@janniks/vue3-katex@0.6.0-rc.5.1)(vue@3.2.47):
+    resolution: {integrity: sha512-s6NeDlcVs6dtC4g/3dFRrvZMeYR7gcLAjmjYQOETQmxJbviGRGSwBNPZZnN4aXPIQiss/4hv3S23IMi4XP3MLw==}
+    peerDependencies:
+      '@janniks/vue3-katex': ^0.6.0-rc.5.1
+      vue: ^3.2.45
+    dependencies:
+      '@janniks/vue3-katex': 0.6.0-rc.5.1(katex@0.16.4)(vue@3.2.47)
+      defu: 6.1.2
       vue: 3.2.47
     dev: false
 

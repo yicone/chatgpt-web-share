@@ -74,16 +74,27 @@ const appStore = useAppStore();
 const route = useRoute();
 const version = 'v' + import.meta.env.PACKAGE_VERSION;
 
-console.log(route);
+// console.log(route);
 
 const menuOptions: MenuOption[] = [
+{
+    label: () =>
+      h(
+        'a',
+        {
+          href: '/classroom',
+          rel: 'noopenner noreferrer'
+        },
+        '学堂'
+      ),
+    key: 'classroom',
+  },
   {
     label: () =>
       h(
         'a',
         {
-          href: 'https://sharegpt.super.site/pricing',
-          target: '_blank',
+          href: '/pricing',
           rel: 'noopenner noreferrer'
         },
         '价格'
@@ -95,11 +106,10 @@ const menuOptions: MenuOption[] = [
       h(
         'a',
         {
-          href: 'https://sharegpt.super.site/faq',
-          target: '_blank',
+          href: '/faq',
           rel: 'noopenner noreferrer'
         },
-        'FAQ'
+        '常见问题'
       ),
     key: 'faq',
   },

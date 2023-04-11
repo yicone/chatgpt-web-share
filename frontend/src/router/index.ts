@@ -32,6 +32,33 @@ const router = createRouter({
       },
     },
     {
+      path: "/pricing",
+      name: "pricing",
+      component: () => import("@/views/pricing.vue"),
+      meta: {
+        requiresAuth: false,
+        roles: ["superuser", "user"],
+      },
+    },
+    {
+      path: "/faq",
+      name: "faq",
+      component: () => import("@/views/faq.vue"),
+      meta: {
+        requiresAuth: false,
+        roles: ["superuser", "user"],
+      },
+    },
+    {
+      path: "/classroom",
+      name: "classroom",
+      component: () => import("@/views/classroom.vue"),
+      meta: {
+        requiresAuth: false,
+        roles: ["superuser", "user"],
+      },
+    },
+    {
       path: "/conversation",
       name: "conversation",
       component: () => import("@/views/conversation/index.vue"),
