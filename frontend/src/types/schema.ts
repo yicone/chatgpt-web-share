@@ -19,3 +19,10 @@ export const chatStatusMap = {
   queueing: "commons.queueingChatStatus",
   idling: "commons.idlingChatStatus",
 };
+
+export const planLevelMap = {
+  basic: "commons.basicPlanLevel",
+  standard: "commons.standardPlanLevel",
+  plus: "commons.plusPlanLevel",
+  premium: "commons.premiumPlanLevel",
+};

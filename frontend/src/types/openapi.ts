@@ -156,6 +156,7 @@ export interface components {
      * @enum {unknown}
      */
     ChatStatus: "asking" | "queueing" | "idling";
+    PlanLevel: "basic" | "standard" | "plus" | "premium";
     /** ConversationSchema */
     ConversationSchema: {
       /**
@@ -306,6 +307,8 @@ export interface components {
       id: number;
       /** Email */
       email: string;
+      /** Level */
+      plan_level: components["schemas"]["PlanLevel"],
       /** Is Active */
       is_active: boolean;
       /** Is Superuser */

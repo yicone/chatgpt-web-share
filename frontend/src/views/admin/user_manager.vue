@@ -19,7 +19,7 @@
 import { ref, reactive, computed, h } from 'vue';
 import { useUserStore } from '@/store';
 import { DataTableColumns, NButton, NIcon } from 'naive-ui'
-import { LimitSchema, UserCreate, UserRead, chatStatusMap } from '@/types/schema';
+import { LimitSchema, UserCreate, UserRead, chatStatusMap, planLevelMap } from '@/types/schema';
 import { useI18n } from 'vue-i18n';
 import { getAllUserApi, registerApi, deleteUserApi, resetUserPasswordApi, updateUserLimitApi } from '@/api/user';
 import { Dialog, Message } from '@/utils/tips';
@@ -64,6 +64,14 @@ const columns: DataTableColumns<UserRead> = [
     key: 'chat_status',
     render(row) {
       return row.chat_status ? t(chatStatusMap[row.chat_status as keyof typeof chatStatusMap]) : ''
+    },
+    sorter: 'default'
+  },
+  {
+    title: t('commons.plan_level'),
+    key: 'plan_level',
+    render(row) {
+      return row.plan_level ? t(planLevelMap[row.plan_level as keyof typeof planLevelMap]) : ''
     },
     sorter: 'default'
   },

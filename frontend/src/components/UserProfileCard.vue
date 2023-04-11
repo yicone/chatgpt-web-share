@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useUserStore } from '@/store';
-import { ServerStatusSchema, UserRead, chatStatusMap } from '@/types/schema';
+import { ServerStatusSchema, UserRead, chatStatusMap, planLevelMap } from '@/types/schema';
 import { i18n } from '@/i18n';
 const t = i18n.global.t as any;
 
@@ -24,7 +24,7 @@ const userStore = useUserStore();
 const user: UserRead | null = userStore.user;
 
 {/* const propsToShow = ['id', 'username', 'email', 'nickname', 'is_superuser', 'active_time', 'chat_status', 'can_use_paid', 'can_use_gpt4', 'max_conv_count', 'available_ask_count', 'available_gpt4_ask_count']; */}
-const propsToShow = ['id', 'username', 'email', 'nickname', 'is_superuser', 'active_time', 'chat_status', 'max_conv_count', 'available_ask_count'];
+const propsToShow = ['id', 'username', 'email', 'nickname', 'plan_level', 'active_time', 'chat_status', 'max_conv_count', 'available_ask_count'];
 
 const translateKey = (key: string) => {
   if (['id', 'username', 'email'].includes(key)) {
@@ -40,6 +40,8 @@ const translateValue = (key: string, value: any) => {
     return value ? new Date(value + 'Z').toLocaleString() : t('commons.neverActive');
   } else if (key === 'chat_status') {
     return t(chatStatusMap[value as keyof typeof chatStatusMap])
+  } else if (key === 'plan_level') {
+    return t(planLevelMap[value as keyof typeof planLevelMap])
   } else if (key === 'max_conv_count') {
     return value === -1 ? t('commons.unlimited') : value;
   } else if (key === 'available_ask_count' || key === 'available_gpt4_ask_count') {
