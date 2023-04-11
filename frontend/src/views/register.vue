@@ -71,7 +71,7 @@ const rules = {
         trigger: 'blur'
       },
       {
-        pattern: /^(?=.{6,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/,
+        pattern: /^(?=.{6,20}$)[a-zA-Z](?!.*[_]{2})[a-zA-Z0-9_]*[a-zA-Z0-9]$/,
         message: t("errors.badUsername"),
         trigger: 'blur'
       }
