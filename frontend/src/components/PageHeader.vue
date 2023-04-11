@@ -1,5 +1,6 @@
 <template>
   <n-page-header>
+    <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" />
     <template #title>
       <n-space :align="'center'">
         <div>
@@ -11,7 +12,6 @@
         <!-- <n-tag :bordered="false" type="success" size="small" class="hidden sm:inline-flex">
           {{ $t("commons.siteSlogan") }}
         </n-tag> -->
-          <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" />
       </n-space>
     </template>
     <template #avatar>
