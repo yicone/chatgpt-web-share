@@ -1,21 +1,26 @@
 <template>
-  <!-- Login Form -->
-  <div class="flex justify-center items-center mt-20">
-    <n-form ref="formRef" :model="formValue" :rules="loginRules" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
-      <n-form-item :label="$t('commons.email')" path="username">
-        <n-input v-model:value="formValue.email" :placeholder="$t('tips.pleaseEnterEmail')" :input-props="{
-          autoComplete: 'username'
-        }" />
-      </n-form-item>
-      <n-form-item :label="$t('commons.password')" path="password">
-        <n-input type="password" show-password-on="click" v-model:value="formValue.password" :placeholder="$t('tips.pleaseEnterPassword')" :input-props="{
-          autoComplete: 'current-password'
-        }" @keyup.enter="login" />
-      </n-form-item>
-      <n-form-item wrapper-col="{ span: 16, offset: 8 }">
-        <n-button type="primary" @click="login" :enabled="loading">{{ $t("commons.login") }}</n-button>
-      </n-form-item>
-    </n-form>
+  <div class="h-screen flex flex-col m-6 mt-30">
+    <div class="justify-center flex-1">
+      <!-- Login Form -->
+      <n-form ref="formRef" :model="formValue" :rules="loginRules" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+        <n-form-item :label="$t('commons.email')" path="username">
+          <n-input v-model:value="formValue.email" :placeholder="$t('tips.pleaseEnterEmail')" :input-props="{
+            autoComplete: 'username'
+          }" />
+        </n-form-item>
+        <n-form-item :label="$t('commons.password')" path="password">
+          <n-input type="password" show-password-on="click" v-model:value="formValue.password" :placeholder="$t('tips.pleaseEnterPassword')" :input-props="{
+            autoComplete: 'current-password'
+          }" @keyup.enter="login" />
+        </n-form-item>
+        <n-form-item wrapper-col="{ span: 16, offset: 8 }">
+          <n-button type="primary" @click="login" :enabled="loading">{{ $t("commons.login") }}</n-button>
+        </n-form-item>
+      </n-form>
+    </div>
+    <div class="">
+          <p>© 2023 ShareGPT</p>
+    </div>
   </div>
 </template>
 
