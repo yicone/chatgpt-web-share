@@ -27,7 +27,7 @@ const user: UserRead | null = userStore.user;
 const propsToShow = ['username', 'email', 'nickname', 'plan_level', 'active_time', 'chat_status'];
 
 const translateKey = (key: string) => {
-  if (['id', 'username', 'email'].includes(key)) {
+  if (['id'].includes(key)) {
     return key;
   }
   return t(`labels.${key}`);

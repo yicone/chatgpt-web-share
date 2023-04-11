@@ -195,7 +195,9 @@
     "autoScrolling": "auto scroll"
   },
   "labels": {
+    "username": "Username",
     "nickname": "Nickname",
+    "email": "Email",
     "is_superuser": "Is Admin",
     "plan_level": "Plan",
     "active_time": "Last active time",

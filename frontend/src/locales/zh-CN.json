@@ -197,7 +197,9 @@
     "autoScrolling": "自动滚动"
   },
   "labels": {
+    "username": "用户名",
     "nickname": "昵称",
+    "email": "邮箱",
     "is_superuser": "是否管理员",
     "plan_level": "套餐",
     "active_time": "最后活动时间",
