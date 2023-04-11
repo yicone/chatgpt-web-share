@@ -136,7 +136,7 @@
     "badCredentials": "Incorrect username or password",
     "badUsername": "Invalid format: 6-20 characters, letters/numbers/underscores/periods only, and no consecutive/starting/ending underscores or periods",
     "badEmail": "Please enter a valid email address",
-    "badPassword": "Please use a combination of uppercase and lowercase letters, numbers, and the following special characters: !@#$%^&*()_+, with a minimum length of 8 characters.",
+    "badPassword": "Please use a combination of uppercase and lowercase letters, numbers, and the following special characters: \"{'@$!%*?&'}\", with a minimum length of 8 characters.",
     "usernameExists": "Username already exists",
     "emailExists": "Email already exists",
     "registerFailed": "Failed to register",

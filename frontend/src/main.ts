@@ -13,25 +13,25 @@ import "highlight.js/lib/common";
 
 import "katex/dist/katex.css";
 
-import * as Sentry from "@sentry/vue";
-import { BrowserTracing } from "@sentry/tracing";
+// import * as Sentry from "@sentry/vue";
+// import { BrowserTracing } from "@sentry/tracing";
 
 const app = createApp(App);
 
-if (import.meta.env.VITE_DISABLE_SENTRY !== "yes") {
-  Sentry.init({
-    app,
-    dsn: "https://ac598690cd994673a8bd319b2c575213@o4504954233159680.ingest.sentry.io/4504954240827392",
-    integrations: [
-      new BrowserTracing({
-        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-        // tracePropagationTargets: ["localhost", "my-site-url.com", /^\//],
-      }),
-    ],
-    tracesSampleRate: 1.0,
-    ignoreErrors: ["AxiosError", "errors."]
-  });
-}
+// if (import.meta.env.VITE_DISABLE_SENTRY !== "yes") {
+//   Sentry.init({
+//     app,
+//     dsn: "https://ac598690cd994673a8bd319b2c575213@o4504954233159680.ingest.sentry.io/4504954240827392",
+//     integrations: [
+//       new BrowserTracing({
+//         routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+//         // tracePropagationTargets: ["localhost", "my-site-url.com", /^\//],
+//       }),
+//     ],
+//     tracesSampleRate: 1.0,
+//     ignoreErrors: ["AxiosError", "errors."]
+//   });
+// }
 
 app.use(router);
 app.use(pinia);
