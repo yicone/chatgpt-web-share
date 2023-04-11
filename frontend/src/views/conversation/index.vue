@@ -4,7 +4,7 @@
     <div class="h-full flex flex-col md:flex-row md:space-x-4">
       <!-- 左栏 -->
       <div class="md:w-1/4 md:min-w-1/4 w-full flex flex-col space-y-4 md:h-full">
-        <StatusCard />
+        <!-- <StatusCard /> -->
         <n-card class="flex-col left-col" content-style="padding: 4px;">
           <div class="flex box-content m-2" v-if="!newConversation">
             <n-button secondary strong type="primary" class="flex-1" @click="makeNewConversation" :disabled="loadingBar">
