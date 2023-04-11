@@ -391,7 +391,6 @@ const sendMsg = async () => {
   LoadingBar.start();
   loadingBar.value = true;
   const message = inputValue.value;
-  inputValue.value = '';
 
   canAbort.value = false;
   isAborted.value = false;
@@ -450,6 +449,7 @@ const sendMsg = async () => {
     } else if (reply.type === 'message') {
       // console.log(reply)
       hasGotReply = true;
+      inputValue.value = '';
       currentActiveMessageRecv.value!.message = reply.message;
       currentActiveMessageRecv.value!.id = reply.parent_id;
       currentActiveMessageRecv.value!.model_slug = reply.model_name;
