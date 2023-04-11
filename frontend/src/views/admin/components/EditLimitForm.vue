@@ -2,6 +2,9 @@
   <n-form label-placement="left" label-width="auto" :style="{
     maxWidth: '640px'
   }">
+    <n-form-item v-model="props.limit" :label="t('commons.planLevel')" path="plan_level">
+      <n-select v-model:value="plan_level" :options="planLevelOptions" />
+    </n-form-item>
     <n-form-item v-model="props.limit" :label="t('commons.canUsePaidModel')" path="can_use_paid">
       <n-switch v-model:value="can_use_paid" placeholder="" />
     </n-form-item>
@@ -22,7 +25,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { LimitSchema } from '@/types/schema';
+import { LimitSchema, UserUpdate } from '@/types/schema';
 import { i18n } from '@/i18n';
 
 const t = i18n.global.t as any;
@@ -35,6 +38,21 @@ const emits = defineEmits(['update:limit']);
 
 const formatValue = (value: number | null) => value == -1 ? t('commons.unlimited') : value
 const parseValue = (value: string) => value == t('commons.unlimited') ? -1 : parseInt(value)
+
+const planLevelOptions = [
+  { label: t('commons.basicPlanLevel'), value: 'basic' },
+  { label: t('commons.standardPlanLevel'), value: 'standard' },
+  { label: t('commons.plusPlanLevel'), value: 'plus' },
+  { label: t('commons.premiumPlanLevel'), value: 'premium' },
+]
+
+const plan_level = computed({
+  get: () => props.limit.plan_level,
+  set: (value) => {
+    props.limit.plan_level = value;
+    emits('update:limit', { ...props.limit, plan_level: value });
+  },
+});
 
 const can_use_paid = computed({
   get: () => props.limit.can_use_paid,

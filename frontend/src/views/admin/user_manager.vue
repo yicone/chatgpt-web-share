@@ -68,7 +68,7 @@ const columns: DataTableColumns<UserRead> = [
     sorter: 'default'
   },
   {
-    title: t('commons.plan_level'),
+    title: t('commons.planLevel'),
     key: 'plan_level',
     render(row) {
       return row.plan_level ? t(planLevelMap[row.plan_level as keyof typeof planLevelMap]) : ''
@@ -252,6 +252,7 @@ const handleAddUser = () => {
 
 const handleSetUserLimit = (user: UserRead) => () => {
   const limit = ref<LimitSchema>({
+    plan_level: user.plan_level,
     max_conv_count: user.max_conv_count,
     available_ask_count: user.available_ask_count,
     can_use_paid: user.can_use_paid,

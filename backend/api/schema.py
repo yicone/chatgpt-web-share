@@ -30,6 +30,7 @@ class UserRead(schemas.BaseUser[int]):
 
 
 class LimitSchema(BaseModel):
+    plan_level: PlanLevel
     can_use_paid: bool | None = None
     can_use_gpt4: bool | None = None
     max_conv_count: int | None = None

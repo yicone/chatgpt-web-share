@@ -201,6 +201,8 @@ export interface components {
     };
     /** LimitSchema */
     LimitSchema: {
+      /** Plan Level */
+      plan_level: components["schemas"]["PlanLevel"];
       /** Can Use Paid */
       can_use_paid?: boolean;
       /** Can Use Gpt4 */

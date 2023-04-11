@@ -24,7 +24,7 @@ const userStore = useUserStore();
 const user: UserRead | null = userStore.user;
 
 {/* const propsToShow = ['id', 'username', 'email', 'nickname', 'is_superuser', 'active_time', 'chat_status', 'can_use_paid', 'can_use_gpt4', 'max_conv_count', 'available_ask_count', 'available_gpt4_ask_count']; */}
-const propsToShow = ['id', 'username', 'email', 'nickname', 'plan_level', 'active_time', 'chat_status', 'max_conv_count', 'available_ask_count'];
+const propsToShow = ['id', 'username', 'email', 'nickname', 'plan_level', 'active_time', 'chat_status'];
 
 const translateKey = (key: string) => {
   if (['id', 'username', 'email'].includes(key)) {
