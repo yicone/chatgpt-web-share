@@ -210,7 +210,7 @@ const getOptions = (): Array<DropdownOption> => {
             await userStore.logout();
             console.warn('logout 1')
             Message.success(t('commons.logoutSuccess'));
-            await router.push({ path: '/home' });
+            await router.push({ path: '/' });
           }
         })
       }
