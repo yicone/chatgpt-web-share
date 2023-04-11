@@ -11,7 +11,7 @@ import uvicorn
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
-from sqlalchemy import select
+from sqlalchemy import select, update
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 import api.globals as g
@@ -20,7 +20,7 @@ from utils import chatgpt_user_helper
 import utils.store_statistics
 from utils.sync_conversations import sync_conversations
 
-from api.enums import ChatStatus
+from api.enums import ChatStatus, PlanLevel
 from api.models import ChatGPTUser, Conversation, User
 from api.response import CustomJSONResponse, PrettyJSONResponse, handle_exception_response
 from api.database import create_db_and_tables, get_async_session_context
@@ -226,6 +226,18 @@ async def on_startup():
         async def sync_conversations_regularly():
             await sync_conversations()
 
+    # 每日 2 点重置basic套餐用户的可提问次数
+    @aiocron.crontab('0 2 * * *', loop=asyncio.get_event_loop())
+    async def reset_basic_users_available_ask_count():
+        logger.info("Resetting basic user's available ask count...")
+        async with get_async_session_context() as session:
+            await session.execute(
+                update(User)
+                .where(User.plan_level == PlanLevel.basic and User.is_verified and User.is_active)
+                .values(available_ask_count=10)
+            )
+            await session.commit()
+        logger.info("Basic user's available ask count reset.")
 
 # 关闭时
 @app.on_event("shutdown")
