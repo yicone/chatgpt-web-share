@@ -41,9 +41,9 @@ import { Message } from '@/utils/tips';
 import { useI18n } from 'vue-i18n';
 import { useAppStore } from "@/store";
 import * as clipboard from "clipboard-polyfill"
-// import md from "@/utils/markdown";
-let md: any;
-let mdLoaded = ref(false);
+import md from "@/utils/markdown";
+// let md: any;
+// let mdLoaded = ref(false);
 
 // onMounted(() => {
 //   import("@/utils/markdown").then((module) => {
