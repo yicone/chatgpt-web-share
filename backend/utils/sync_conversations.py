@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 async def sync_conversations():
     logger.info("Syncing conversations...")
     for chatgpt_user_id, chatgpt_manager in g.chatgpt_managers.items():
-        time.sleep(10)
+        time.sleep(3)
         try:
             chatgpt_user_email = chatgpt_manager.chatbot.config["email"]
             logger.info(f"Syncing conversations for {chatgpt_user_email}...")
