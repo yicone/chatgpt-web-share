@@ -155,6 +155,7 @@ const popupNewConversationDialog = (
             placeholder: t("tips.whetherUsePaidModel"),
             "onUpdate:value": (value: string) => (convModel = value),
             options: getAvailableModelOptions(),
+            "default-value": "text-davinci-002-render-sha",
           }),
         ]
       ),
