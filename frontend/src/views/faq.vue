@@ -9,7 +9,7 @@ import { NotionRenderer, getPageBlocks } from "vue-notion";
 const blockMap = ref(null)
 
 onMounted(async () => {
-    blockMap.value = await getPageBlocks('55be2945cf3248c099ce617bec69d6be')
+    blockMap.value = await getPageBlocks('55be2945cf3248c099ce617bec69d6be', 'https://notion-api.sharegpt.vip/v1')
 })
 </script>
 

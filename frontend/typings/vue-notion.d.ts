@@ -2,5 +2,5 @@ declare module 'vue-notion' {
   import { DefineComponent } from 'vue';
 
   export const NotionRenderer: DefineComponent;
-  export function getPageBlocks(pageId: string): Promise<any>
+  export function getPageBlocks(pageId: string, endpointUrl: string | undefined): Promise<any>
 }
