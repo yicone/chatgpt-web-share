@@ -3,3 +3,56 @@
     visibility: hidden !important;
   }
 }
+
+.custom-background {
+  background-image: url("/carl-heyerdahl-KE0nC8-58MQ-unsplash.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  /* 根据需要设置容器的高度和宽度 */
+  height: 400px;
+  width: 100%;
+}
+
+.custom-background h1 {
+  color: white;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.custom-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.custom-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.custom-list li:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #4b4b4b;
+}
