@@ -75,7 +75,7 @@
         </n-space>
       </div>
     </div>
-    <div class="">
+    <div class="mt-9 mb-9" style="text-align: center;">
       <p>© 2023 ShareGPT</p>
     </div>
   </div>

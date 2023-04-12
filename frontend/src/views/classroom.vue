@@ -1,5 +1,10 @@
 <template>
-    <NotionRenderer :blockMap="blockMap" fullPage />
+    <div class="justify-center flex-1">
+        <NotionRenderer :blockMap="blockMap" fullPage />
+    </div>
+    <div class="mt-9 mb-9" style="text-align: center;">
+        <p>© 2023 ShareGPT</p>
+    </div>
 </template>
 
 <script setup lang="ts">
