@@ -15,7 +15,7 @@
       </n-space>
     </template>
     <template #avatar>
-      <n-avatar src="/chatgpt-icon.svg" />
+      <n-avatar src="/sharegpt-icon.svg" />
     </template>
     <template #extra>
       <n-space>
