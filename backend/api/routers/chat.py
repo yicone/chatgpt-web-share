@@ -18,7 +18,7 @@ import api.globals as g
 from api.database import get_async_session_context
 from api.enums import ChatStatus, ChatModels
 from api.exceptions import InvalidParamsException, AuthorityDenyException, InternalException
-from api.models import User, Conversation
+from api.models import ChatGPTUser, User, Conversation
 
 from api.schema import ConversationSchema
 from api.users import current_active_user, websocket_auth, current_super_user
@@ -270,8 +270,8 @@ async def ask(websocket: WebSocket):
             await websocket.close(1008, "errors.noAvailableGPT4AskCount")
             return
 
-    chatgpt_user_id = choose_chatgpt_user_id(conversation, model_name)
-    chatgpt_manager = g.chatgpt_managers[chatgpt_user_id]
+    chatgpt_user = choose_chatgpt_user(conversation, model_name)
+    chatgpt_manager = g.chatgpt_managers[chatgpt_user.id]
     if chatgpt_manager.is_busy():
         await websocket.send_json({
             "type": "queueing",
@@ -420,6 +420,7 @@ async def ask(websocket: WebSocket):
                         current_time = datetime.utcnow()
                         conversation = Conversation(conversation_id=conversation_id, title=new_title,
                                                     user_id=user.id,
+                                                    chatgpt_user_id=chatgpt_user.id,
                                                     model_name=model_name, create_time=current_time,
                                                     active_time=current_time)
                         session.add(conversation)
@@ -456,16 +457,19 @@ async def ask(websocket: WebSocket):
         await websocket.close(websocket_code, websocket_reason)
 
 
-def choose_chatgpt_user_id(conversation: Conversation, model_name: ChatModels) -> int:
+def choose_chatgpt_user(conversation: Conversation, model_name: ChatModels) -> ChatGPTUser:
+    available_chatgpt_users: list[ChatGPTUser] = []
     chatgpt_users = g.chatgpt_users
     if conversation is not None:
-        chatgpt_users = [user for user in chatgpt_users if user.id == conversation.chatgpt_user_id]
-    elif model_name in [ChatModels.gpt4, ChatModels.paid]:
-        chatgpt_users = [user for user in chatgpt_users if user.is_plus]
+        chatgpt_users = [chatgpt_user for chatgpt_user in chatgpt_users if chatgpt_user.id == conversation.chatgpt_user_id]
+    elif model_name in [ChatModels.gpt4]:
+        chatgpt_users = [chatgpt_user for chatgpt_user in chatgpt_users if chatgpt_user.is_plus]
 
-    available_users = [user.id for user in chatgpt_users if not g.chatgpt_managers[user.id].is_busy()]
-    if len(available_users) > 0:
-        return random.choice(available_users)
+    assert len(chatgpt_users) > 0
+
+    available_chatgpt_users = [chatgpt_user for chatgpt_user in chatgpt_users if not g.chatgpt_managers[chatgpt_user.id].is_busy()]
+    if len(available_chatgpt_users) > 0:
+        return random.choice(available_chatgpt_users)
 
     logger.warning("no available chatgpt user")
-    return random.choice([user.id for user in chatgpt_users])
+    return random.choice(chatgpt_users)
