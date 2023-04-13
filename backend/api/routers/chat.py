@@ -16,7 +16,7 @@ from api.chatgpt import ChatGPTManager
 import api.globals as g
 
 from api.database import get_async_session_context
-from api.enums import ChatStatus, ChatModels
+from api.enums import ChatStatus, ChatModels, PlanLevel
 from api.exceptions import InvalidParamsException, AuthorityDenyException, InternalException
 from api.models import ChatGPTUser, User, Conversation
 
@@ -270,7 +270,7 @@ async def ask(websocket: WebSocket):
             await websocket.close(1008, "errors.noAvailableGPT4AskCount")
             return
 
-    chatgpt_user = choose_chatgpt_user(conversation, model_name)
+    chatgpt_user = choose_chatgpt_user(conversation, user)
     chatgpt_manager = g.chatgpt_managers[chatgpt_user.id]
     if chatgpt_manager.is_busy():
         await websocket.send_json({
@@ -457,13 +457,17 @@ async def ask(websocket: WebSocket):
         await websocket.close(websocket_code, websocket_reason)
 
 
-def choose_chatgpt_user(conversation: Conversation, model_name: ChatModels) -> ChatGPTUser:
+def choose_chatgpt_user(conversation: Conversation, user: User) -> ChatGPTUser:
     available_chatgpt_users: list[ChatGPTUser] = []
     chatgpt_users = g.chatgpt_users
     if conversation is not None:
         chatgpt_users = [chatgpt_user for chatgpt_user in chatgpt_users if chatgpt_user.id == conversation.chatgpt_user_id]
-    elif model_name in [ChatModels.gpt4]:
-        chatgpt_users = [chatgpt_user for chatgpt_user in chatgpt_users if chatgpt_user.is_plus]
+    else:
+        # 如果是基础版用户，选择普通GPT账号；如果是付费用户，选择付费GPT账号
+        if user.plan_level == PlanLevel.basic:
+            chatgpt_users = [chatgpt_user for chatgpt_user in chatgpt_users if not chatgpt_user.is_plus]
+        else:
+            chatgpt_users = [chatgpt_user for chatgpt_user in chatgpt_users if chatgpt_user.is_plus]
 
     assert len(chatgpt_users) > 0
 
