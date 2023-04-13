@@ -1,5 +1,7 @@
 import contextlib
 from datetime import datetime
+import random
+import string
 from typing import Any
 
 from fastapi.security import OAuth2PasswordRequestForm
@@ -12,13 +14,13 @@ import api.globals as g
 config = g.config
 from typing import Optional
 
-from fastapi import Depends, Request, HTTPException
+from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, models, IntegerIDMixin, InvalidID, schemas
 from fastapi_users.authentication import CookieTransport, AuthenticationBackend
 from fastapi_users.authentication import JWTStrategy
 
 from api.database import get_user_db, get_async_session_context, get_user_db_context
-from api.models import User
+from api.models import ReferralCode, User
 
 from sqlalchemy import select, Integer
 from fastapi_users.models import UP
@@ -71,10 +73,20 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, Integer]):
             if (await session.execute(select(User).filter(User.email == user_create.email))).scalar_one_or_none():
                 raise api.exceptions.EmailExistsException("Email already exists")
 
+            # Check if referral code exists and is not used
+            if user_create.used_referral_code:
+                result = await session.execute(
+                    select(ReferralCode).filter(ReferralCode.code == user_create.used_referral_code)
+                )
+                referral_code = result.scalars().first()
+                if referral_code is None:
+                    logger.warn(f"Invalid referral_code: {referral_code}")
+
         user_create.is_verified = False
         user_create.max_conv_count = config.get('new_user_max_conv_count', 1)
         user_create.available_ask_count = config.get('new_user_available_ask_count', 10)
         user_create.available_gpt4_ask_count = config.get('new_user_available_gpt4_ask_count', 0)
+
         return await super().create(user_create, safe, request)
 
     reset_password_token_secret = SECRET
@@ -146,6 +158,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, Integer]):
         except:
             return False
 
+
 async def websocket_auth(websocket: WebSocket) -> User | None:
     user = None
     try:
@@ -173,6 +186,7 @@ get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
 # FastAPIUsers 实例，注意不要和 fastapi_users 包混淆
 fastapi_users = FastAPIUsers[User, Integer](get_user_manager, [auth_backend])
 
+
 __current_active_user = fastapi_users.current_user(active=True)
 
 
@@ -199,3 +213,6 @@ async def current_super_user(user: User = Depends(current_active_user)):
         raise api.exceptions.AuthorityDenyException("You are not super user")
     return user
 
+
+def generate_referral_code(length=8):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
