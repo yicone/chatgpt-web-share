@@ -15,6 +15,9 @@
         <n-form-item path="user.password" class="w-full sm:w-auto">
           <n-input v-model:value="formValue.user.password" placeholder="密码" type="password" :maxlength="20" />
         </n-form-item>
+        <n-form-item path="user.referral_code" v-show="false">
+          <n-input v-model:value="formValue.user.referral_code" type="hidden" />
+        </n-form-item>
         <n-form-item class="w-full sm:w-auto">
           <n-button attr-type="button" type="primary" @click="handleSignUpClick">
             创建账号
@@ -59,6 +62,7 @@ const formValue = ref({
     nickname: '',
     email: '',
     password: '',
+    referral_code: '',
   }
 });
 const size = ref<'small' | 'medium' | 'large'>('medium');
@@ -102,6 +106,8 @@ const rules = {
     ]
   }
 };
+
+formValue.value.user.referral_code = router.currentRoute.value.query.referral_code as string; 
 
 const autoCompleteOptions = computed(() => {
   return ['@gmail.com', '@163.com', '@qq.com'].map((suffix) => {

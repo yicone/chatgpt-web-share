@@ -27,6 +27,8 @@ class User(Base):
     email: Mapped[str]
     active_time: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=None, comment="最后活跃时间")
     plan_level: Mapped[PlanLevel] = mapped_column(Enum(PlanLevel), default=PlanLevel.basic, comment="套餐等级")
+    used_referral_code: Mapped[Optional[str]] = mapped_column(String(32), nullable=True, comment="使用的推荐码")
+    referral_code: Mapped[Optional[str]] = relationship("ReferralCode", back_populates="user")
 
     chat_status: Mapped[ChatStatus] = mapped_column(Enum(ChatStatus), default=ChatStatus.idling, comment="对话状态")
     can_use_paid: Mapped[bool] = mapped_column(Boolean, default=False, comment="是否可以使用paid模型")
@@ -41,6 +43,21 @@ class User(Base):
 
     hashed_password: Mapped[str] = mapped_column(String(1024))
     conversations: Mapped[List["Conversation"]] = relationship("Conversation", back_populates="user")
+
+
+class ReferralCode(Base):
+    """
+    推荐码表
+    """
+
+    __tablename__ = "referral_code"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, comment="推荐码id")
+    code: Mapped[str] = mapped_column(String(32), unique=True, index=True, comment="推荐码")
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), comment="用户id")
+    user: Mapped["User"] = relationship("User", back_populates="referral_code")
+    create_time: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=None, comment="创建时间")
+    used_time: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=None, comment="使用时间")
 
 
 class ChatGPTUser(Base):

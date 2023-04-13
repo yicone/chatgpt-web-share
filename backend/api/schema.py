@@ -1,6 +1,6 @@
 import uuid
 import datetime
-from typing import List
+from typing import List, Optional
 
 from fastapi_users import schemas
 from pydantic import Field, BaseModel, validator
@@ -52,6 +52,8 @@ class UserCreate(schemas.BaseUserCreate):
     max_conv_count: int = 1
     available_ask_count: int = 10
     available_gpt4_ask_count: int = 0
+    used_referral_code: Optional[str] = Field(None, alias="referral_code", description="推荐码")
+
     class Config:
         orm_mode = True
 

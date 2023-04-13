@@ -1,12 +1,12 @@
-import jwt
+import asyncio
 from sqlalchemy.future import select
 
 from api.database import get_async_session_context, get_user_db_context
 from api.exceptions import AuthorityDenyException, InvalidParamsException
-from api.models import User
+from api.models import ReferralCode, User
 from api.response import response
 from api.schema import UserRead, UserUpdate, UserCreate, LimitSchema
-from api.users import auth_backend, fastapi_users, current_active_user, get_user_manager_context, current_super_user
+from api.users import auth_backend, fastapi_users, current_active_user, get_user_manager_context, current_super_user, generate_referral_code
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -85,6 +85,19 @@ async def update_limit(limit: LimitSchema, user_id: int = None, _user: User = De
         session.add(target_user)
         await session.commit()
         return response(200)
+
+
+@router.post("/referral_code")
+async def create_referral_code(user: User = Depends(current_active_user)):
+    new_referral_code = asyncio.run(generate_referral_code())
+    referral = ReferralCode(code=new_referral_code, user_id=user.id)
+
+    async with get_async_session_context() as session:
+        session.add(referral)
+        session.commit()
+        session.refresh(referral)
+
+    return {"message": "Referral code created successfully", "referral_code": new_referral_code}
 
 
 router.include_router(
